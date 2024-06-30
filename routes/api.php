@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\V1\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,10 +19,9 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-// Route::post('login', 'UserController@login');
-// Route::post('register', 'UserController@addNewUser');
+Route::post('register', [UserController::class, 'store']);
+Route::post('login', [UserController::class, 'login']);
 
 Route::middleware('auth:api')->group(function () {
-    // Route::get('online-users', 'UserController@onlineUser');
-    return view('welcome');
+    Route::get('/users', [UserController::class, 'index']);
 });
