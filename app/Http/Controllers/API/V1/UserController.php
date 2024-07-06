@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\User;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
@@ -18,6 +19,13 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $request
+        ]);
+
+
         $user = User::where('email', $request->email)->first();
 
         if ($user) {
@@ -34,7 +42,7 @@ class UserController extends Controller
                 'password' => 'required|string|min:8',
                 'role' => ['required', Rule::in(['Admin', 'Customer', 'Service Provider'])],
             ]);
-    
+
             $newUser = User::create([
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
@@ -43,7 +51,18 @@ class UserController extends Controller
                 'password' => Hash::make($request->password),
                 'role' => $request->role,
             ]);
-    
+
+            $profile = Profile::create([
+                'user_id' => $newUser->id,
+                'address' => $request->address,
+                'locality' => $request->locality,
+                'state' => $request->state,
+                'country' => $request->country,
+                'postal_code' => $request->postal_code,
+                'phone_number' => $request->phone_number,
+                'profile_picture' => $request->profile_picture,
+            ]);
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'User created successfully!',
@@ -52,11 +71,24 @@ class UserController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(Request $request)
     {
+
+        $id = $request->query('id');
         $user = User::findOrFail($id);
 
-        return response()->json($user);
+        if ($user) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User found!',
+                'user' => $user,
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found!',
+            ]);
+        }
     }
 
     public function update(Request $request, $id)
@@ -72,10 +104,24 @@ class UserController extends Controller
         ]);
     }
 
-    public function destory($id)
+    public function destroy(Request $request)
     {
-        $user = User::find($id);
-        $user->delete();
+        $id = $request->query('id');
+        $user = User::findOrFail($id);
+
+        if ($user) {
+            $user->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User deleted successfully!',
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found!',
+            ]);
+        }
     }
 
     public function login(Request $request)
@@ -97,7 +143,7 @@ class UserController extends Controller
                     'message' => 'Password is incorrect!'
                 ]);
             }
-        }else{
+        } else {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Your provided email is not in our list!'

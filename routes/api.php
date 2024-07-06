@@ -23,5 +23,7 @@ Route::post('register', [UserController::class, 'store']);
 Route::post('login', [UserController::class, 'login']);
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('/users', [UserController::class, 'index']);
+    Route::get('users', [UserController::class, 'index']);
+    Route::get('show/user', [UserController::class, 'show']);
+    Route::delete('delete/user', [UserController::class, 'destroy']);
 });
