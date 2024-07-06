@@ -11,10 +11,19 @@ class ProfileFactory extends Factory
      *
      * @return array
      */
+
     public function definition()
     {
+        $barangays = [
+            'Poblacion',
+            'San Juan',
+            'Santa Cruz',
+            'San Isidro',
+        ];
+
         return [
-            'address' => $this->faker->streetAddress,
+            'street' => $this->faker->streetAddress,
+            'barangay' => $this->faker->randomElement($barangays),
             'locality' => $this->faker->city,
             'state' => $this->faker->stateAbbr,
             'country' => $this->faker->country,

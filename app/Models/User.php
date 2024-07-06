@@ -29,14 +29,6 @@ class User extends Authenticatable
         'password',
     ];
 
-    public function profile(){
-        return $this->hasOne(Profile::class);
-    }
-
-    public function services(){
-        return $this->hasMany(Service::class);
-    }
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -55,4 +47,24 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::created(function ($model) {
+            $number = str_pad($model->id, 3, '0', STR_PAD_LEFT);
+            $model->user_name = 'bookEase-' . $number;
+            $model->save();
+        });
+    }
 }
