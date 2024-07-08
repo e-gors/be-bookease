@@ -10,18 +10,27 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
+        $search = $request->search;
 
-        return response()->json([
-            'status' => 200,
-            'users' => $users
-        ]);
+        $query = User::query();
+
+        $query->where('role', '!=', 'Admin');
+
+        if (!is_null($search)) {
+            $query->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"]);
+        }
+
+        // Eager load the profile relationship
+        $query->with('profile');
+
+        return UserResource::collection($this->paginated($query, $request));
     }
 
     public function login(Request $request)
@@ -33,16 +42,22 @@ class UserController extends Controller
                 $token = $user->createToken(env('APP_URL'));
 
                 return response()->json([
-                    'code' => 200,
-                    'access_token' => $token->accessToken,
+                    'status' => 200,
+                    'token' => $token->accessToken,
                     'expires_in' => $token->token->expires_at->diffInSeconds(Carbon::now()),
                     'user' => new UserResource($user)
                 ]);
             } else {
-                abort(422, 'Invalid Credentials');
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'Invalid Credentials'
+                ]);
             }
         } catch (Exception $e) {
-            throw $e;
+            return response()->json([
+                'status' => 500,
+                'message' => $e->getMessage()
+            ]);
         }
     }
 

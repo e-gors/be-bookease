@@ -22,6 +22,7 @@ class ProfileFactory extends Factory
         ];
 
         return [
+            'gender' => $this->faker->randomElement(['male', 'female']),
             'street' => $this->faker->streetAddress,
             'barangay' => $this->faker->randomElement($barangays),
             'locality' => $this->faker->city,

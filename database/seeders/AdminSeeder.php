@@ -25,6 +25,7 @@ class AdminSeeder extends Seeder
             'email' => "egoronweb@gmail.com",
             'password' => Hash::make("Admin@BookEase"),
             'role' => "Admin",
+            'gender' => "male",
             'street' => "Lapu-Lapu",
             'barangay' => "Atabay",
             'locality' => "Hilongos",
@@ -49,6 +50,7 @@ class AdminSeeder extends Seeder
 
             Profile::create([
                 'user_id' => $newUser->id,
+                'gender' => $newAdmin['gender'],
                 'street' => $newAdmin['street'],
                 'barangay' => $newAdmin['barangay'],
                 'locality' => $newAdmin['locality'],
