@@ -15,7 +15,7 @@ class Testimonial extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function service(){
+    public function booking(){
         return $this->belongsTo(Service::class);
     }
 }

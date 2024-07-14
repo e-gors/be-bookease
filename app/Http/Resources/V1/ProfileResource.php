@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\V1;
 
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -22,8 +22,8 @@ class ProfileResource extends JsonResource
             'locality' => $this->locality,
             'province' => $this->state,
             'country' => $this->country,
-            'postal_code' => $this->postal_code,
-            'profile_picture' => $this->profile_picture,
+            'postalCode' => $this->postal_code,
+            'profilePicture' => $this->profile_picture,
         ];
     }
 }

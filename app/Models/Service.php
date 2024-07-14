@@ -9,13 +9,15 @@ class Service extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'child_category_id', 'pricing_model', 'price'];
+    protected $fillable = ['user_id', 'child_category_id', 'pricing_model', 'price', 'location', 'available_times'];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function child(){
+    public function child()
+    {
         return $this->belongsTo(ChildCategory::class, 'child_category_id');
     }
 }

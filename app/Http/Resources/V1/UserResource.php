@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\V1;
 
+use App\Http\Resources\V1\ProfileResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -16,16 +17,16 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'user_name' => $this->user_name,
+            'firstName' => $this->first_name,
+            'lastName' => $this->last_name,
+            'userName' => $this->user_name,
             'name' => trim($this->first_name . " " . $this->last_name),
             'email' => $this->email,
             'role' => $this->role,
             'isVerified' => $this->email_verified_at !== null,
             'status' => $this->status,
-            'banned_until' => $this->banned_until,
-            'profile' => new ProfileResource($this->whenLoaded('profile'))
+            'bannedUntil' => $this->banned_until,
+            'profile' => ProfileResource::collection($this->whenLoaded('profile')),
         ];
     }
 }

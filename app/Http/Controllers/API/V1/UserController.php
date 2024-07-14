@@ -2,64 +2,54 @@
 
 namespace App\Http\Controllers\API\V1;
 
-use Exception;
-use Carbon\Carbon;
 use App\Models\User;
-use App\Models\Profile;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use App\Services\V1\UserQuery;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\V1\UserResource;
+use App\Http\Resources\V1\UserCollection;
 
 class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->search;
+        $search = $request->query('search');
+        $includeProfile = $request->query('includeProfile');
 
+        $filter = new UserQuery();
+        $queryItems = $filter->transform($request);
+
+        // Start a query builder instance
         $query = User::query();
 
+        // Exclude Admin users
         $query->where('role', '!=', 'Admin');
 
-        if (!is_null($search)) {
+        if (count($queryItems) > 0) {
+            $query->where($queryItems);
+        }
+
+        // if search has value
+        if ($search) {
             $query->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"]);
         }
 
-        // Eager load the profile relationship
-        $query->with('profile');
-
-        return UserResource::collection($this->paginated($query, $request));
-    }
-
-    public function login(Request $request)
-    {
-        try {
-            if (auth()->attempt($request->only(['email', 'password']))) {
-                $user = auth()->user();
-
-                $token = $user->createToken(env('APP_URL'));
-
-                return response()->json([
-                    'status' => 200,
-                    'token' => $token->accessToken,
-                    'expires_in' => $token->token->expires_at->diffInSeconds(Carbon::now()),
-                    'user' => new UserResource($user)
-                ]);
-            } else {
-                return response()->json([
-                    'status' => 422,
-                    'message' => 'Invalid Credentials'
-                ]);
-            }
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => 500,
-                'message' => $e->getMessage()
-            ]);
+        if ($includeProfile) {
+            // Eager load the profile relationship
+            $query->with('profile');
         }
+
+        // Paginate the results
+        $paginatedResults = $this->paginated($query, $request);
+
+        // Append query parameters to pagination links
+        $paginatedResults->appends($request->query());
+
+        // Return the results as a JSON response using the UserResource collection
+        return new UserCollection($paginatedResults);
     }
+
 
     public function store(Request $request)
     {
@@ -90,22 +80,18 @@ class UserController extends Controller
         }
     }
 
-    public function show(Request $request)
+    public function show(User $user)
     {
-
-        $id = $request->query('id');
-        $user = User::findOrFail($id);
-
         if ($user) {
             return response()->json([
-                'status' => 'success',
-                'message' => 'User found!',
-                'user' => $user,
+                'status' => 200,
+                'user' => new UserResource($user),
+                'message' => "User found!"
             ]);
         } else {
             return response()->json([
-                'status' => 'error',
-                'message' => 'User not found!',
+                'status' => 404,
+                'message' => "User not found!"
             ]);
         }
     }

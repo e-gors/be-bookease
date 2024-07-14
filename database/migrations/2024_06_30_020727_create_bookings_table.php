@@ -21,7 +21,7 @@ class CreateBookingsTable extends Migration
             $table->date('end_date')->nullable();
             $table->time('time')->nullable();
             $table->enum('type', ['range', 'specific', 'single'])->default('single');
-            $table->enum('status', ['pending', 'process', 'declined', 'success'])->default('pending');
+            $table->enum('status', ['pending', 'process', 'declined', 'void', 'success'])->default('pending');
             $table->timestamps();
         });
     }

@@ -16,7 +16,7 @@ class Booking extends Model
         return $this->belongsTo(User::class, 'customer_id');
     }
 
-    public function service(){
-        return $this->belongsTo(Service::class, 'service_id');
+    public function testimonial(){
+        return $this->hasOne(Service::class, 'service_id');
     }
 }

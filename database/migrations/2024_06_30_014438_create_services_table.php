@@ -19,6 +19,8 @@ class CreateServicesTable extends Migration
             $table->foreignId('child_category_id')->constrained()->onDelete('cascade');
             $table->enum('pricing_model', ['per_service', 'per_hour', 'per_day'])->default('per_service');
             $table->decimal('price', 6, 2);
+            $table->string('location');
+            $table->json('available_times');
             $table->timestamps();
         });
     }

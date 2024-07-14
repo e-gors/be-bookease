@@ -13,10 +13,9 @@ class Profile extends Model
     protected $fillable = [
         'user_id',
         'gender',
-        'street',
-        'barangay',
-        'locality',
-        'state',
+        'address',
+        'city',
+        'pronvice',
         'country',
         'postal_code',
         'phone_number',

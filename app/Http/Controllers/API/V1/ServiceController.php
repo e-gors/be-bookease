@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use Illuminate\Http\Request;
 use App\Models\ParentCategory;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\ParentCategoryResource;
+use App\Http\Resources\V1\ParentCategoryResource;
 
 class ServiceController extends Controller
 {
