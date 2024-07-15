@@ -14,23 +14,16 @@ class ProfileFactory extends Factory
 
     public function definition()
     {
-        $barangays = [
-            'Poblacion',
-            'San Juan',
-            'Santa Cruz',
-            'San Isidro',
-        ];
 
         return [
-            'gender' => $this->faker->randomElement(['male', 'female']),
-            'street' => $this->faker->streetAddress,
-            'barangay' => $this->faker->randomElement($barangays),
-            'locality' => $this->faker->city,
-            'state' => $this->faker->stateAbbr,
+            'gender' => $this->faker->randomElement(['male', 'female', 'prefer not to say']),
+            'address' => $this->faker->address,
+            'city' => $this->faker->city,
+            'province' => $this->faker->stateAbbr,
             'country' => $this->faker->country,
             'postal_code' => $this->faker->postcode,
             'phone_number' => $this->faker->phoneNumber,
-            'profile_picture' => null,
+            'profile_picture' => $this->faker->imageUrl,
         ];
     }
 }

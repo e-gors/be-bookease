@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\V1\UserQuery;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\V1\UserRequest;
 use App\Http\Resources\V1\UserResource;
 use App\Http\Resources\V1\UserCollection;
 
@@ -16,6 +17,7 @@ class UserController extends Controller
     {
         $search = $request->query('search');
         $includeProfile = $request->query('includeProfile');
+        $includeServices = $request->query('includeServices');
 
         $filter = new UserQuery();
         $queryItems = $filter->transform($request);
@@ -40,6 +42,12 @@ class UserController extends Controller
             $query->with('profile');
         }
 
+        if($includeServices){
+            $query->where('role', '=', 'Service Provider');
+            // Eager load the services relationship
+            $query->with('services');
+        }
+
         // Paginate the results
         $paginatedResults = $this->paginated($query, $request);
 
@@ -51,38 +59,55 @@ class UserController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
+        $valid = $request->all();
+        $valid['password'] = Hash::make($valid['password']);
+        
+        return new UserResource(User::create($valid));
 
-        $user = User::where('email', $request->email)->first();
+        // $user = User::where('email', $request->email)->first();
 
-        if ($user) {
-            return response()->json([
-                'status' => 400,
-                'message' => 'Email already used! Please use another one.'
-            ]);
-        } else {
-            $newUser = User::create([
-                'first_name' => $request->given_name ? $request->given_name : null,
-                'last_name' => $request->family_name ? $request->family_name : null,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
+        // if ($user) {
+        //     return response()->json([
+        //         'status' => 400,
+        //         'message' => 'Email already used! Please use another one.'
+        //     ]);
+        // } else {
+        //     $newUser = User::create([
+        //         'first_name' => $request->given_name ? $request->given_name : null,
+        //         'last_name' => $request->family_name ? $request->family_name : null,
+        //         'email' => $request->email,
+        //         'password' => Hash::make($request->password),
+        //     ]);
 
-            $token = $newUser->createToken(env('APP_URL'));
+        //     $token = $newUser->createToken(env('APP_URL'));
 
-            return response()->json([
-                'status' => 201,
-                'message' => 'User created successfully!',
-                'user' => $newUser,
-                'token' => $token->accessToken
-            ]);
-        }
+        //     return response()->json([
+        //         'status' => 201,
+        //         'message' => 'User created successfully!',
+        //         'user' => $newUser,
+        //         'token' => $token->accessToken
+        //     ]);
+        // }
     }
 
-    public function show(User $user)
+    public function show(User $user, Request $request)
     {
+        $includeProfile = $request->query('includeProfile');
+        $includeServices = $request->query('includeServices');
+
+        if($includeServices){
+            $user->where('role', '=', 'Service Provider');
+            // Eager load the services relationship
+            $user->loadMissing('services');
+        }
         if ($user) {
+            if ($includeProfile) {
+                // Eager load the profile relationship
+                $user->load('profile');
+            }
+    
             return response()->json([
                 'status' => 200,
                 'user' => new UserResource($user),

@@ -26,7 +26,8 @@ class UserResource extends JsonResource
             'isVerified' => $this->email_verified_at !== null,
             'status' => $this->status,
             'bannedUntil' => $this->banned_until,
-            'profile' => ProfileResource::collection($this->whenLoaded('profile')),
+            'profile' => new ProfileResource($this->whenLoaded('profile')),
+            'services' => ServiceResource::collection($this->whenLoaded('services'))
         ];
     }
 }

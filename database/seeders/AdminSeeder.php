@@ -19,24 +19,23 @@ class AdminSeeder extends Seeder
     public function run()
     {
         $newAdmin = [
-            'first_name' => "Efren",
-            'last_name' => "Goron",
-            'user_name' => "egoronweb",
-            'email' => "egoronweb@gmail.com",
-            'password' => Hash::make("Admin@BookEase"),
-            'role' => "Admin",
-            'gender' => "male",
-            'street' => "Lapu-Lapu",
-            'barangay' => "Atabay",
-            'locality' => "Hilongos",
-            'state' => "Leyte",
-            'country' => "Philippines",
-            'postal_code' => "6524",
-            'phone_number' => "+639054170203",
+            'first_name' => 'Efren',
+            'last_name' => 'Goron',
+            'user_name' => 'egoronweb',
+            'email' => 'egoronweb@gmail.com',
+            'password' => Hash::make('Admin@BookEase'),
+            'role' => 'Admin',
+            'gender' => 'male',
+            'address' => 'Lapu-lapu Atabay',
+            'city' => 'Hilongos',
+            'province' => 'Leyte',
+            'country' => 'Philippines',
+            'postal_code' => '6524',
+            'phone_number' => '+639054170203',
         ];
 
-
         $user = User::where('email', $newAdmin['email'])->first();
+
         if (!$user) {
             $newUser = User::create([
                 'first_name' => $newAdmin['first_name'],
@@ -45,16 +44,16 @@ class AdminSeeder extends Seeder
                 'email' => $newAdmin['email'],
                 'password' => $newAdmin['password'],
                 'role' => $newAdmin['role'],
+                'user_type' => 'i',
                 'email_verified_at' => now(),
             ]);
 
             Profile::create([
                 'user_id' => $newUser->id,
                 'gender' => $newAdmin['gender'],
-                'street' => $newAdmin['street'],
-                'barangay' => $newAdmin['barangay'],
-                'locality' => $newAdmin['locality'],
-                'state' => $newAdmin['state'],
+                'address' => $newAdmin['address'],
+                'city' => $newAdmin['city'],
+                'province' => $newAdmin['province'],
                 'country' => $newAdmin['country'],
                 'postal_code' => $newAdmin['postal_code'],
                 'phone_number' => $newAdmin['phone_number'],

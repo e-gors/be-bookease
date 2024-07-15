@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Role;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UserFactory extends Factory
@@ -18,7 +19,8 @@ class UserFactory extends Factory
     {
         // Get the roles from the database
         $roles = Role::where('name', '!=', 'Admin')->pluck('name')->toArray();
-        $status = $this->faker->randomElement(['active', 'banned']);
+        $status = $this->faker->randomElement(['active', 'in active', 'banned', 'deleted']);
+        $userType = $this->faker->randomElement(['I', 'B', 'i', 'b']);
         $banDurations = [
             Carbon::now()->addDay(),
             Carbon::now()->addDays(2),
@@ -31,11 +33,12 @@ class UserFactory extends Factory
             'last_name' => $this->faker->lastName,
             'user_name' => $this->faker->userName,
             'email' => $this->faker->unique()->safeEmail,
-            'email_verified_at' => now(),
-            'password' => bcrypt('password'), // Replace with Hash::make('password') if needed
+            'password' => Hash::make('password'),
             'role' => $this->faker->randomElement($roles),
+            'user_type' => $userType,
             'status' => $status,
             'banned_until' => $bannedUntil,
+            'email_verified_at' => now(),
             'remember_token' => Str::random(10),
         ];
     }

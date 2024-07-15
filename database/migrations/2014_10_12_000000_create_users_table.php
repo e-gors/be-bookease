@@ -21,8 +21,8 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('role'); // Admin | Customer | Service Provider
-            $table->string('user_type'); // Individual | Business
-            $table->enum('status', ['active', 'banned', 'deleted'])->default('active');
+            $table->enum('user_type', ['I', 'B']); // Individual | Business
+            $table->enum('status', ['active', 'in active', 'banned', 'deleted'])->default('active'); 
             $table->timestamp('banned_until')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken()->nullable();
