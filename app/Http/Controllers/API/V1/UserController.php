@@ -48,11 +48,8 @@ class UserController extends Controller
             $query->with('services');
         }
 
-        // Paginate the results
-        $paginatedResults = $this->paginated($query, $request);
-
-        // Append query parameters to pagination links
-        $paginatedResults->appends($request->query());
+        // Paginate the results and append query params to pagination links
+        $paginatedResults = $this->paginated($query, $request)->appends($request->query());
 
         // Return the results as a JSON response using the UserResource collection
         return new UserCollection($paginatedResults);
@@ -65,31 +62,6 @@ class UserController extends Controller
         $valid['password'] = Hash::make($valid['password']);
         
         return new UserResource(User::create($valid));
-
-        // $user = User::where('email', $request->email)->first();
-
-        // if ($user) {
-        //     return response()->json([
-        //         'status' => 400,
-        //         'message' => 'Email already used! Please use another one.'
-        //     ]);
-        // } else {
-        //     $newUser = User::create([
-        //         'first_name' => $request->given_name ? $request->given_name : null,
-        //         'last_name' => $request->family_name ? $request->family_name : null,
-        //         'email' => $request->email,
-        //         'password' => Hash::make($request->password),
-        //     ]);
-
-        //     $token = $newUser->createToken(env('APP_URL'));
-
-        //     return response()->json([
-        //         'status' => 201,
-        //         'message' => 'User created successfully!',
-        //         'user' => $newUser,
-        //         'token' => $token->accessToken
-        //     ]);
-        // }
     }
 
     public function show(User $user, Request $request)
@@ -121,7 +93,7 @@ class UserController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
         $user = User::findOrFail($id);
 
