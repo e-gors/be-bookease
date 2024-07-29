@@ -15,8 +15,8 @@ use App\Http\Controllers\API\V1\UserController;
 |
 */
 
-Route::post('register', [UserController::class, 'store']);
-Route::post('login', [Controller::class, 'login']);
+Route::post('v1/register', [UserController::class, 'store']);
+Route::post('v1/login', [Controller::class, 'login']);
 
 Route::group([
     // 'middleware' => 'auth:api',
@@ -25,11 +25,7 @@ Route::group([
 ], function () {
     Route::apiResource('users', 'UserController');
     Route::apiResource('services', 'ServiceController');
+    Route::apiResource('categories', 'CategoryController');
+    Route::apiResource('blogs', 'BlogController');
+    Route::apiResource('roles', 'RoleController');
 });
-
-// Route::middleware('auth:api')->group(function () {
-//     Route::get('users', [UserController::class, 'index']);
-//     Route::get('services', [ServiceController::class, 'index']);
-//     Route::get('show/user', [UserController::class, 'show']);
-//     Route::delete('delete/user', [UserController::class, 'destroy']);
-// });

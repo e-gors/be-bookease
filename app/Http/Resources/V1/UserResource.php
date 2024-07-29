@@ -17,17 +17,14 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'firstName' => $this->first_name,
-            'lastName' => $this->last_name,
-            'userName' => $this->user_name,
-            'name' => trim($this->first_name . " " . $this->last_name),
+            'name' => $this->name,
             'email' => $this->email,
             'role' => $this->role,
             'isVerified' => $this->email_verified_at !== null,
             'status' => $this->status,
             'bannedUntil' => $this->banned_until,
             'profile' => new ProfileResource($this->whenLoaded('profile')),
-            'services' => ServiceResource::collection($this->whenLoaded('services'))
+            'services' => ServiceResource::collection($this->whenLoaded('services')),
         ];
     }
 }

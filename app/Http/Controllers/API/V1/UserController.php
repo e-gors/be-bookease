@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Services\V1\UserQuery;
@@ -34,7 +35,7 @@ class UserController extends Controller
 
         // if search has value
         if ($search) {
-            $query->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"]);
+            $query->where('name', 'LIKE', "%$search%");
         }
 
         if ($includeProfile) {
@@ -42,7 +43,7 @@ class UserController extends Controller
             $query->with('profile');
         }
 
-        if($includeServices){
+        if ($includeServices) {
             $query->where('role', '=', 'Service Provider');
             // Eager load the services relationship
             $query->with('services');
@@ -60,8 +61,26 @@ class UserController extends Controller
     {
         $valid = $request->all();
         $valid['password'] = Hash::make($valid['password']);
-        
-        return new UserResource(User::create($valid));
+
+        $newUser = new UserResource(User::create($valid));
+
+        if ($newUser) {
+
+            $token = $newUser->createToken(env('APP_URL'));
+
+            return response()->json([
+                'status' => 201,
+                'message' => 'User created successfully',
+                'user' => $newUser,
+                'token' => $token->accessToken,
+                'token_expires_in' => $token->token->expires_at->diffInSeconds(Carbon::now()),
+            ]);
+        } else {
+            return response()->json([
+                'status' => 400,
+                'message' => 'User creation failed',
+            ]);
+        }
     }
 
     public function show(User $user, Request $request)
@@ -69,7 +88,7 @@ class UserController extends Controller
         $includeProfile = $request->query('includeProfile');
         $includeServices = $request->query('includeServices');
 
-        if($includeServices){
+        if ($includeServices) {
             $user->where('role', '=', 'Service Provider');
             // Eager load the services relationship
             $user->loadMissing('services');
@@ -79,7 +98,7 @@ class UserController extends Controller
                 // Eager load the profile relationship
                 $user->load('profile');
             }
-    
+
             return response()->json([
                 'status' => 200,
                 'user' => new UserResource($user),

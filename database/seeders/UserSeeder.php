@@ -8,7 +8,7 @@ use App\Models\Service;
 use App\Models\ChildCategory;
 use Illuminate\Database\Seeder;
 
-class UsersSeeder extends Seeder
+class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.

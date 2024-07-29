@@ -19,9 +19,10 @@ class CreateBookingsTable extends Migration
             $table->foreignId('service_id')->constrained()->onDelete('cascade');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->time('time')->nullable();
-            $table->enum('type', ['range', 'specific', 'single'])->default('single');
-            $table->enum('status', ['pending', 'process', 'declined', 'void', 'success'])->default('pending');
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
+            $table->enum('date_type', ['single', 'specific', 'range'])->default('single');
+            $table->enum('status', ['pending', 'process', 'declined', 'void', 'completed'])->default('pending');
             $table->timestamps();
         });
     }

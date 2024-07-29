@@ -4,7 +4,7 @@ namespace App\Http\Resources\V1;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ChildCategoryResource extends JsonResource
+class BlogImageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,10 +14,10 @@ class ChildCategoryResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        return[
             'id' => $this->id,
-            'name' => $this->name,
-            'description' => $this->description
+            'blogId' => $this->blog_id,
+            'imageUrl' => $this->image_url
         ];
     }
 }

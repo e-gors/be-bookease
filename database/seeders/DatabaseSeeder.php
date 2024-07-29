@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\AdminSeeder;
-use Database\Seeders\UsersSeeder;
+use Database\Seeders\UserSeeder;
 use Database\Seeders\CategorySeeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,9 +17,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(RoleSeeder::class);
-        $this->call(AdminSeeder::class);
-        $this->call(CategorySeeder::class);
-        $this->call(UsersSeeder::class);
+        $this->call([
+            RoleSeeder::class,
+            AdminSeeder::class,
+            CategorySeeder::class,
+            UserSeeder::class,
+            BlogSeeder::class,
+        ]);
     }
 }

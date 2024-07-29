@@ -27,7 +27,16 @@ class ApiFilter
 
             foreach ($operators as $operator) {
                 if (isset($query[$operator])) {
-                    $eloQuery[] = [$column, $this->operatorMap[$operator], $query[$operator]];
+                    // Special handling for boolean-like filtering
+                    if ($column === 'email_verified_at') {
+                        if ($query[$operator] == 'true') {
+                            $eloQuery[] = [$column, '!=', null];
+                        } elseif ($query[$operator] == 'false') {
+                            $eloQuery[] = [$column, '=', null];
+                        }
+                    } else {
+                        $eloQuery[] = [$column, $this->operatorMap[$operator], $query[$operator]];
+                    }
                 }
             }
         }

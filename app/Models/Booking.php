@@ -10,7 +10,7 @@ class Booking extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['customer_id', 'service_id', 'start_date', 'end_date', 'time', 'type', 'status'];
+    protected $fillable = ['customer_id', 'service_id', 'start_date', 'end_date', 'time', 'date_type', 'status'];
 
     public function user(){
         return $this->belongsTo(User::class, 'customer_id');

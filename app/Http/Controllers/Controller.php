@@ -32,13 +32,13 @@ class Controller extends BaseController
                 return response()->json([
                     'status' => 200,
                     'token' => $token->accessToken,
-                    'expires_in' => $token->token->expires_at->diffInSeconds(Carbon::now()),
+                    'token_expires_in' => $token->token->expires_at->diffInSeconds(Carbon::now()),
                     'user' => new UserResource($user)
                 ]);
             } else {
                 return response()->json([
                     'status' => 422,
-                    'message' => 'Invalid Credentials'
+                    'message' => 'Invalid credentials, please check your email and password!'
                 ]);
             }
         } catch (Exception $e) {
@@ -47,9 +47,5 @@ class Controller extends BaseController
                 'message' => $e->getMessage()
             ]);
         }
-    }
-
-    public function filter(){
-
     }
 }

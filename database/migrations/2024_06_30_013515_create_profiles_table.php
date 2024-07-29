@@ -24,6 +24,7 @@ class CreateProfilesTable extends Migration
             $table->string('postal_code');
             $table->string('phone_number');
             $table->string('profile_picture')->nullable();
+            $table->enum('profile_status', ['incomplete', 'complete'])->default('incomplete');
             $table->timestamps();
         });
     }

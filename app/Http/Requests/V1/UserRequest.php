@@ -25,26 +25,22 @@ class UserRequest extends FormRequest
     public function rules()
     {
         return [
-            'firstName' => ['required'],
-            'lastName' => ['required'],
-            'userName' => ['nullable'],
+            'name' => ['nullable'],
             'email' => ['required', 'email', 'unique:users'],
             'password' => ['required', 'min:8', 'max:22'],
-            'role' => ['required', Rule::in(['Admin', 'Customer', 'Service Provider'])],
-            'userType' => ['required', Rule::in(['I', 'B', 'i', 'b'])], // I | i = Individual, B | b = Business
-            'status' => ['required', Rule::in(['active', 'inactive', ' banned', 'deleted'])],
-            'bannedUntil' => ['nullable'],
+            'role' => ['nullable', Rule::in(['Admin', 'Customer', 'Service Provider'])],
+            'userType' => ['nullable', Rule::in(['I', 'B', 'i', 'b'])], // I | i = Individual, B | b = Business
+            'status' => ['required', Rule::in(['active', 'inactive', 'banned', 'deleted'])],
+            'bannedUntil' => ['nullable', 'date'],
         ];
     }
 
     protected function prepareForValidation()
     {
         $this->merge([
-            'first_name' => $this->firstName,
-            'last_name' => $this->lastName,
-            'user_name' => $this->userName,
             'user_type' => $this->userType,
-            'banned_until' => $this->bannedUntil
+            'banned_until' => $this->bannedUntil,
+            'status' => $this->status ?? 'active',
         ]);
     }
 }

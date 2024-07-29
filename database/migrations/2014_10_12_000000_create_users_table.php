@@ -15,14 +15,12 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('user_name');
+            $table->string('name')->nullable();
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('role'); // Admin | Customer | Service Provider
-            $table->enum('user_type', ['I', 'B']); // Individual | Business
-            $table->enum('status', ['active', 'in active', 'banned', 'deleted'])->default('active'); 
+            $table->string('role')->nullable(); // Admin | Customer | Service Provider
+            $table->enum('user_type', ['I', 'B'])->nullable(); // Individual | Business
+            $table->enum('status', ['active', 'inactive', 'banned', 'deleted'])->default('active'); 
             $table->timestamp('banned_until')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken()->nullable();

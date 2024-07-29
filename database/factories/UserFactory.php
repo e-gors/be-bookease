@@ -19,7 +19,7 @@ class UserFactory extends Factory
     {
         // Get the roles from the database
         $roles = Role::where('name', '!=', 'Admin')->pluck('name')->toArray();
-        $status = $this->faker->randomElement(['active', 'in active', 'banned', 'deleted']);
+        $status = $this->faker->randomElement(['active', 'inactive', 'banned', 'deleted']);
         $userType = $this->faker->randomElement(['I', 'B', 'i', 'b']);
         $banDurations = [
             Carbon::now()->addDay(),
@@ -29,16 +29,14 @@ class UserFactory extends Factory
         $bannedUntil = $status === 'active' ? null : $this->faker->randomElement($banDurations);
 
         return [
-            'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
-            'user_name' => $this->faker->userName,
+            'name' => $this->faker->name,
             'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make('password'),
             'role' => $this->faker->randomElement($roles),
             'user_type' => $userType,
             'status' => $status,
             'banned_until' => $bannedUntil,
-            'email_verified_at' => now(),
+            'email_verified_at' => $this->faker->boolean(50) ? now() : null,
             'remember_token' => Str::random(10),
         ];
     }

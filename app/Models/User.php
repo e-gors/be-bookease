@@ -20,10 +20,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
 
+    protected $attributes = [
+        'status' => 'active',
+    ];
+
     protected $fillable = [
-        'first_name',
-        'last_name',
-        'user_name',
+        'name',
         'email',
         'role',
         'user_type',
@@ -59,15 +61,5 @@ class User extends Authenticatable
     public function services()
     {
         return $this->hasMany(Service::class);
-    }
-
-    public static function boot()
-    {
-        parent::boot();
-        static::created(function ($model) {
-            $number = str_pad($model->id, 3, '0', STR_PAD_LEFT);
-            $model->user_name = 'bookEase-' . $number;
-            $model->save();
-        });
     }
 }

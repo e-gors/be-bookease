@@ -19,9 +19,7 @@ class AdminSeeder extends Seeder
     public function run()
     {
         $newAdmin = [
-            'first_name' => 'Efren',
-            'last_name' => 'Goron',
-            'user_name' => 'egoronweb',
+            'name' => 'Efren Goron',
             'email' => 'egoronweb@gmail.com',
             'password' => Hash::make('Admin@BookEase'),
             'role' => 'Admin',
@@ -38,9 +36,7 @@ class AdminSeeder extends Seeder
 
         if (!$user) {
             $newUser = User::create([
-                'first_name' => $newAdmin['first_name'],
-                'last_name' => $newAdmin['last_name'],
-                'user_name' => $newAdmin['user_name'],
+                'name' => $newAdmin['name'],
                 'email' => $newAdmin['email'],
                 'password' => $newAdmin['password'],
                 'role' => $newAdmin['role'],

@@ -18,7 +18,7 @@ class ParentCategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'child_category' => $this->whenLoaded('child')
+            'children' => ChildCategoryResource::collection($this->whenLoaded('child'))
         ];
     }
 }
